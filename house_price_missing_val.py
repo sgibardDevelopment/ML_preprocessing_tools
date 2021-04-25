@@ -8,6 +8,7 @@ from imputer import Imputer
 
 dataframe_creator = Dataframe_Creator("train.csv", "test.csv", 'SalePrice')
 
+'''
 # Extract the dataset into X_full, the target y and the test set X_test_full :
 X_full = dataframe_creator.get_dataset_full()
 y = dataframe_creator.get_dataset_target()
@@ -55,3 +56,4 @@ print(model_zero_one_evaluation.evaluate_and_get_mean_absolute_error())
 zero_one_X_test = deal_with_missing_val_for_X_test.replace_missing_val_columns_with_zero_one_columns(imputer)
 prediction_test = model_zero_one.predict(zero_one_X_test)
 model_zero_one.generate_sumbmission_file(X_test, prediction_test)
+'''
