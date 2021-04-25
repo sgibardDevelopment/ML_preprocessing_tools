@@ -1,30 +1,35 @@
 import pandas as pd
 from imputer import Imputer
+from dataset import Dataset
 
 class DealWithMissingValues:
 
-    def __init__(self, X, type: str, missing_val_number_limiter: int):
-        self.X = X
-        self.type = type
-        self.missing_val_number_limiter = missing_val_number_limiter
-        self.cols_with_missing_values_X = []
+    def __init__(self, dataset: pd.DataFrame, missing_val_number_limiter=None):
+        self.dataset = dataset
+        if missing_val_number_limiter is None:
+            self.__create_list_of_cols_with_missing_values()
+        else:
+            self.__create_list_of_cols_with_missing_values_according_to_limiter(missing_val_number_limiter)
 
     def __create_list_of_cols_with_missing_values(self):
-        self.cols_with_missing_values_X = [col for col in self.X.columns if self.X[col].isnull().any()]
+        self.cols_with_missing_values = [col for col in self.dataset.columns if self.dataset[col].isnull().any()]
+        self.__check_if_cols_with_missing_values_is_empty()
 
-    def __create_list_of_cols_with_missing_values_according_to_limiter(self):
-        missing_val_count_by_column_X = (self.X.isnull().sum())
-        self.cols_with_missing_values_X = missing_val_count_by_column_X[missing_val_count_by_column_X > self.missing_val_number_limiter].index.values.tolist()
-        self.missing_val_count_by_column_X = missing_val_count_by_column_X
+    def __create_list_of_cols_with_missing_values_according_to_limiter(self, missing_val_number_limiter: int):
+        missing_val_count_by_column = (self.dataset.isnull().sum())
+        self.cols_with_missing_values = missing_val_count_by_column[missing_val_count_by_column > missing_val_number_limiter].index.values.tolist()
+        self.__check_if_cols_with_missing_values_is_empty()
+
+    def __check_if_cols_with_missing_values_is_empty(self):
+        if len(self.cols_with_missing_values) is 0:
+            print("There are no missing values in dataset.")
 
     def drop_columns_with_missing_val(self):
-        self.__create_list_of_cols_with_missing_values()
-        reduced_X = self.X.drop(self.cols_with_missing_values_X, axis=1)
-        return reduced_X
-
+        return self.dataset.drop(self.cols_with_missing_values, axis=1)
+'''
     def drop_columns_with_missing_val_according_to_limiter(self):
         self.__create_list_of_cols_with_missing_values_according_to_limiter()
-        reduced_X = self.X.drop(self.cols_with_missing_values_X, axis=1)
+        reduced_X = self.dataset.drop(self.cols_with_missing_values, axis=1)
         return reduced_X
 
     def impute_columns_with_missing_val(self, imputer: Imputer, X: pd.DataFrame):
@@ -38,20 +43,21 @@ class DealWithMissingValues:
         1 : when there is a missing value
         """
         pd.options.mode.chained_assignment = None  # default='warn'
-        zero_one_X = self.X
+        zero_one_X = self.dataset
         self.__create_list_of_cols_with_missing_values_according_to_limiter()
         zero_one_X = self.__zero_one_columns_generator(zero_one_X)
         zero_one_X = self.__apply_simple_impute_for_columns_under_limiter(imputer, zero_one_X)
         return zero_one_X
 
     def __zero_one_columns_generator(self, zero_one_X):
-        for col in self.cols_with_missing_values_X:
-            zero_one_X[col] = self.X[col].isnull().astype(int)
+        for col in self.cols_with_missing_values:
+            zero_one_X[col] = self.dataset[col].isnull().astype(int)
         return zero_one_X
 
     def __apply_simple_impute_for_columns_under_limiter(self, imputer: Imputer, X: pd.DataFrame):
         if self.missing_val_number_limiter > 0:
             return self.impute_columns_with_missing_val(imputer, X)
+            '''
 
 
 

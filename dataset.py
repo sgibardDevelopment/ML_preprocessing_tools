@@ -19,4 +19,5 @@ class Dataset:
             target,
             train_size=split,
             test_size=1-split,
-            random_state=0)
+            random_state=0
+        )

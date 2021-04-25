@@ -15,6 +15,10 @@ dataframe_creator.clean_test_set_of_string_columns()
 
 # Cut the dataset between a training set and a validation set :
 dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
+
+deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
+dataset.training_set = deal_with_missing_val_for_training_set.drop_columns_with_missing_val()
+print(dataset.training_set)
 '''
 missing_val_number_limiter = 10
 deal_with_missing_val_for_X_train = DealWithMissingValues(X_train, "train", missing_val_number_limiter)
