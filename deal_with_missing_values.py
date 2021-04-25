@@ -26,11 +26,8 @@ class DealWithMissingValues:
 
     def drop_columns_with_missing_val(self):
         return self.dataset.drop(self.cols_with_missing_values, axis=1)
+
 '''
-    def drop_columns_with_missing_val_according_to_limiter(self):
-        self.__create_list_of_cols_with_missing_values_according_to_limiter()
-        reduced_X = self.dataset.drop(self.cols_with_missing_values, axis=1)
-        return reduced_X
 
     def impute_columns_with_missing_val(self, imputer: Imputer, X: pd.DataFrame):
         imputed_X = imputer.transform_with_imputer(X)
