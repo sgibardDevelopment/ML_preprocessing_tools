@@ -27,10 +27,10 @@ class Dataframe_Creator:
         self.dataset.drop([target_column_name], axis=1, inplace=True)
 
     def clean_dataset_of_string_columns(self):
-        self.dataset.select_dtypes(exclude=['object'])
+        self.dataset = self.dataset.select_dtypes(exclude=['object'])
 
     def clean_test_set_of_string_columns(self):
-        self.test_set.select_dtypes(exclude=['object'])
+        self.test_set = self.test_set.select_dtypes(exclude=['object'])
 
     def get_dataset_full(self):
         return self.dataset
