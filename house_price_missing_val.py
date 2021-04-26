@@ -20,7 +20,7 @@ print(dataset.dataset)
 #dataset.drop_columns_with_missing_val()
 #imputer = Imputer('simple', dataset.training_set)
 #dataset.impute_columns_with_missing_val(imputer)
-dataset.locate_missing_values()
+dataset.locate_missing_values(100)
 print(dataset.dataset)
 
 #deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
