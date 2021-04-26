@@ -18,9 +18,10 @@ dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 
 print(dataset.dataset)
 #dataset.drop_columns_with_missing_val()
-imputer = Imputer('simple', dataset.training_set)
-dataset.impute_columns_with_missing_val(imputer)
-print(dataset.dataset.head())
+#imputer = Imputer('simple', dataset.training_set)
+#dataset.impute_columns_with_missing_val(imputer)
+dataset.locate_missing_values()
+print(dataset.dataset)
 
 #deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
 #deal_with_missing_val_for_validation_set = DealWithMissingValues(dataset.validation_set)
