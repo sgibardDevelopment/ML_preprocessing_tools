@@ -1,6 +1,5 @@
 import pandas as pd
 from imputer import Imputer
-from dataset import Dataset
 
 class DealWithMissingValues:
 
