@@ -16,11 +16,18 @@ dataframe_creator.clean_test_set_of_string_columns()
 # Cut the dataset between a training set and a validation set :
 dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 
-deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
-deal_with_missing_val_for_validation_set = DealWithMissingValues(dataset.validation_set)
+print(dataset.dataset)
+#dataset.drop_columns_with_missing_val()
+#imputer = Imputer('simple', dataset.training_set)
+#dataset.impute_columns_with_missing_val(imputer)
+dataset.locate_missing_values(100)
+print(dataset.dataset)
 
-imputer = Imputer('simple', dataset.training_set)
-print(deal_with_missing_val_for_training_set.impute_columns_with_missing_val(imputer))
+#deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
+#deal_with_missing_val_for_validation_set = DealWithMissingValues(dataset.validation_set)
+
+#imputer = Imputer('simple', dataset.training_set)
+#print(deal_with_missing_val_for_training_set.impute_columns_with_missing_val(imputer))
 
 
 '''

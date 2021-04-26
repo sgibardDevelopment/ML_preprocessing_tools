@@ -1,6 +1,5 @@
 import pandas as pd
 from imputer import Imputer
-from dataset import Dataset
 
 class DealWithMissingValues:
 
@@ -30,29 +29,10 @@ class DealWithMissingValues:
     def impute_columns_with_missing_val(self, imputer: Imputer):
         return imputer.transform_with_imputer(self.working_set)
 
-'''
-    def replace_missing_val_columns_with_zero_one_columns(self, imputer: Imputer):
-        """
-        columns with missing values are switched with zero and one columns - for one column :
-        0 : when there is a value
-        1 : when there is a missing value
-        """
-        pd.options.mode.chained_assignment = None  # default='warn'
-        zero_one_X = self.dataset
-        self.__create_list_of_cols_with_missing_values_according_to_limiter()
-        zero_one_X = self.__zero_one_columns_generator(zero_one_X)
-        zero_one_X = self.__apply_simple_impute_for_columns_under_limiter(imputer, zero_one_X)
-        return zero_one_X
-
-    def __zero_one_columns_generator(self, zero_one_X):
+    def locate_missing_values(self):
         for col in self.cols_with_missing_values:
-            zero_one_X[col] = self.dataset[col].isnull().astype(int)
-        return zero_one_X
-
-    def __apply_simple_impute_for_columns_under_limiter(self, imputer: Imputer, X: pd.DataFrame):
-        if self.missing_val_number_limiter > 0:
-            return self.impute_columns_with_missing_val(imputer, X)
-            '''
+            self.working_set[col + " has na ?"] = self.working_set[col].isnull().astype(int)
+        return self.working_set
 
 
 
