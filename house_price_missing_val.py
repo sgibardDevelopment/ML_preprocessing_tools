@@ -1,5 +1,6 @@
 import pandas as pd
 from dataframe_creator import Dataframe_Creator
+from dataset import Dataset
 from sklearn.model_selection import train_test_split
 from deal_with_missing_values import DealWithMissingValues
 from model_generator import ModelGenerator
@@ -8,17 +9,21 @@ from imputer import Imputer
 
 dataframe_creator = Dataframe_Creator("train.csv", "test.csv", 'SalePrice')
 
-# Extract the dataset into X_full, the target y and the test set X_test_full :
-X_full = dataframe_creator.get_dataset_full()
-y = dataframe_creator.get_dataset_target()
-X_test_full = dataframe_creator.get_dataset_test_full()
-
 # Get rid of string columns :
-X, X_test = dataframe_creator.get_df_without_columns_with_string()
+dataframe_creator.clean_dataset_of_string_columns()
+dataframe_creator.clean_test_set_of_string_columns()
 
 # Cut the dataset between a training set and a validation set :
-X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=0)
+dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 
+deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
+deal_with_missing_val_for_validation_set = DealWithMissingValues(dataset.validation_set)
+
+imputer = Imputer('simple', dataset.training_set)
+print(deal_with_missing_val_for_training_set.impute_columns_with_missing_val(imputer))
+
+
+'''
 missing_val_number_limiter = 10
 deal_with_missing_val_for_X_train = DealWithMissingValues(X_train, "train", missing_val_number_limiter)
 deal_with_missing_val_for_X_valid = DealWithMissingValues(X_valid, "valid", missing_val_number_limiter)
@@ -55,3 +60,4 @@ print(model_zero_one_evaluation.evaluate_and_get_mean_absolute_error())
 zero_one_X_test = deal_with_missing_val_for_X_test.replace_missing_val_columns_with_zero_one_columns(imputer)
 prediction_test = model_zero_one.predict(zero_one_X_test)
 model_zero_one.generate_sumbmission_file(X_test, prediction_test)
+'''
