@@ -6,22 +6,33 @@ from deal_with_missing_values import DealWithMissingValues
 from model_generator import ModelGenerator
 from model_evaluator import ModelEvaluator
 from imputer import Imputer
+from training_set import Training_set
+from validation_set import Validation_set
 
-dataframe_creator = Dataframe_Creator("train.csv", "test.csv", 'SalePrice')
+dataframe_creator = Dataframe_Creator("train.csv", "test.csv", "SalePrice")
 
 # Get rid of string columns :
 dataframe_creator.clean_dataset_of_string_columns()
 dataframe_creator.clean_test_set_of_string_columns()
 
 # Cut the dataset between a training set and a validation set :
+#dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
+training_set = Training_set(dataframe_creator.dataset, dataframe_creator.target, 0.8)
+validation_set = Validation_set(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 
+#print(dataset.dataset)
 print(dataset.dataset)
+print(training_set.dataset)
+print(validation_set.dataset)
+
+
+#print(dataset.dataset)
 #dataset.drop_columns_with_missing_val()
 #imputer = Imputer('simple', dataset.training_set)
 #dataset.impute_columns_with_missing_val(imputer)
-dataset.locate_missing_values(100)
-print(dataset.dataset)
+#dataset.locate_missing_values(100)
+#print(dataset.dataset)
 
 #deal_with_missing_val_for_training_set = DealWithMissingValues(dataset.training_set)
 #deal_with_missing_val_for_validation_set = DealWithMissingValues(dataset.validation_set)
