@@ -1,0 +1,16 @@
+# Other
+.idea
+*.iml
+
+# VS Code
+.vscode
+
+# Python cache
+__pycache__
+
+# Libreoffice
+.~lock*
+
+# CSV files
+CSV files/
+
