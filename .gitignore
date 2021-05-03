@@ -12,5 +12,5 @@ __pycache__
 .~lock*
 
 # CSV files
-CSV files/
+*.csv
 
