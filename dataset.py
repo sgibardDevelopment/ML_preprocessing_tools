@@ -18,7 +18,7 @@ class Dataset:
             raise (ValueError("Error: Dataset - Split value must be less than 1.0."))
 
     def __create_training_and_validation_set(self, dataset: pd.DataFrame, target: pd.DataFrame, split: int):
-        self.training_set, self.validation_set, self.training_target, self.validation_target = train_test_split(
+        self._training_set, self._validation_set, self._training_target, self._validation_target = train_test_split(
             dataset,
             target,
             train_size=split,
