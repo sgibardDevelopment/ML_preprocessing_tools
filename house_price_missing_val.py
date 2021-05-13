@@ -8,6 +8,7 @@ from model_evaluator import ModelEvaluator
 from imputer import Imputer
 from training_set import Training_set
 from validation_set import Validation_set
+from test_set import Test_set
 
 dataframe_creator = Dataframe_Creator("train.csv", "test.csv", "SalePrice")
 
@@ -20,11 +21,13 @@ dataframe_creator.clean_test_set_of_string_columns()
 dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 training_set = Training_set(dataframe_creator.dataset, dataframe_creator.target, 0.8)
 validation_set = Validation_set(dataframe_creator.dataset, dataframe_creator.target, 0.8)
+test_set = Test_set(dataframe_creator.test_set)
 
 #print(dataset.dataset)
-print(dataset.dataset)
-print(training_set.dataset)
-print(validation_set.dataset)
+#print(dataset.dataset)
+#print(training_set.dataset)
+#print(validation_set.dataset)
+print(test_set.dataset)
 
 
 #print(dataset.dataset)
