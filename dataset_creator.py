@@ -1,6 +1,6 @@
 import pandas as pd
 
-class Dataframe_Creator:
+class Dataset_creator:
 
     def __init__(self, data_full_path_name: str, test_full_path_name: str, target_column_name: str):
         self.dataset = self.__generate_dataset(data_full_path_name, target_column_name)

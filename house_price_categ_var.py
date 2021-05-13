@@ -1,9 +1,9 @@
-from dataframe_creator import Dataframe_Creator
+from dataset_creator import Dataset_creator
 from deal_with_categ_var import DealWithCategVar
 from deal_with_missing_values import DealWithMissingValues
 from imputer import Imputer
 
-dataframe_creator = Dataframe_Creator("train.csv", "test.csv", 'SalePrice')
+dataframe_creator = Dataset_creator("train.csv", "test.csv", 'SalePrice')
 
 # Extract the dataset into X_full, the target y and the test set X_test_full :
 X_full = dataframe_creator.get_dataset_full()
