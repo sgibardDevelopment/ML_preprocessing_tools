@@ -1,28 +1,29 @@
-from dataframe_creator import Dataframe_Creator
+from dataset_creator import Dataset_creator
 from dataset import Dataset
 from imputer import Imputer
 from training_set import Training_set
 from validation_set import Validation_set
 from test_set import Test_set
 
-dataframe_creator = Dataframe_Creator("train.csv", "test.csv", "SalePrice")
+dataset_creator = Dataset_creator("train.csv", "test.csv", "SalePrice")
 
 # Get rid of string columns :
-dataframe_creator.clean_dataset_of_string_columns()
-dataframe_creator.clean_test_set_of_string_columns()
+dataset_creator.clean_dataset_of_string_columns()
+dataset_creator.clean_test_set_of_string_columns()
 
 # Cut the dataset between a training set and a validation set :
-dataset = Dataset(dataframe_creator.dataset, dataframe_creator.target, 0.8)
-training_set = Training_set(dataframe_creator.dataset, dataframe_creator.target, 0.8)
-validation_set = Validation_set(dataframe_creator.dataset, dataframe_creator.target, 0.8)
-test_set = Test_set(dataframe_creator.test_set)
+dataset = Dataset(dataset_creator.dataset, dataset_creator.target, 0.8)
+training_set1 = Training_set(dataset_creator.dataset, dataset_creator.target, 0.8)
+training_set2 = Training_set(dataset_creator.dataset, dataset_creator.target, 0.8)
+validation_set = Validation_set(dataset_creator.dataset, dataset_creator.target, 0.8)
+test_set = Test_set(dataset_creator.test_set)
 
-imputer = Imputer('simple', training_set.dataset)
+imputer = Imputer('simple', training_set1.dataset)
 
-print(training_set.dataset.shape)
-training_set.impute_columns_with_missing_val(imputer)
-training_set.drop_columns_with_missing_val()
-print(training_set.dataset.shape)
+print(training_set2.dataset.shape)
+training_set1.impute_columns_with_missing_val(imputer)
+training_set2.drop_columns_with_missing_val()
+print(training_set2.dataset.shape)
 
 #print(dataset.dataset)
 #dataset.drop_columns_with_missing_val()
