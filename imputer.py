@@ -1,24 +1,21 @@
 from sklearn.impute import SimpleImputer
 import pandas as pd
 
+
 class Imputer:
 
-    def __init__(self, imputer_type: str, X_train: pd.DataFrame):
-        self.imputer_type = imputer_type
-        self.X_train = X_train
+    def __init__(self, imputer_type: str, imputer_training_set: pd.DataFrame):
+        self.__training_set = imputer_training_set
 
         if imputer_type == "simple":
-            self.my_imputer = self.__train_simple_imputer()
+            self.__my_imputer = self.__train_simple_imputer()
 
     def __train_simple_imputer(self):
         my_simple_imputer = SimpleImputer()
-        my_simple_imputer.fit(self.X_train)
+        my_simple_imputer.fit(self.__training_set)
         return my_simple_imputer
 
-    def transform_with_imputer(self, X: pd.DataFrame):
-        imputed_X = pd.DataFrame(self.my_imputer.transform(X))
-        imputed_X.columns = X.columns
-        return imputed_X
-
-
-
+    def transform_with_imputer(self, working_set: pd.DataFrame):
+        imputed_set = pd.DataFrame(self.__my_imputer.transform(working_set))
+        imputed_set.columns = working_set.columns
+        return imputed_set
