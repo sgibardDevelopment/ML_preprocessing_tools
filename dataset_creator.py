@@ -1,11 +1,12 @@
 import pandas as pd
+from dataset import Dataset
 
 class Dataset_creator:
 
     def __init__(self, data_full_path_name: str, test_full_path_name: str, target_column_name: str):
-        self.dataset = self.__generate_dataset(data_full_path_name, target_column_name)
-        self.test_set = self.__generate_test_set(test_full_path_name)
-        self.target = self.__generate_target_column(target_column_name)
+        self.__dataset = self.__generate_dataset(data_full_path_name, target_column_name)
+        self.__test_set = self.__generate_test_set(test_full_path_name)
+        self.__target = self.__generate_target_column(target_column_name)
 
     def __generate_dataset(self, data_full_path_name: str, target_column_name: str):
         dataset = pd.read_csv(data_full_path_name, index_col="Id")
@@ -26,20 +27,14 @@ class Dataset_creator:
     def __delete_target_column(self, target_column_name:str):
         self.dataset.drop([target_column_name], axis=1, inplace=True)
 
+    def create_dataset(self, split= 0.8):
+        return Dataset(self.__dataset, self.__target, split)
+
     def clean_dataset_of_string_columns(self):
         self.dataset = self.dataset.select_dtypes(exclude=['object'])
 
     def clean_test_set_of_string_columns(self):
         self.test_set = self.test_set.select_dtypes(exclude=['object'])
-
-    def get_dataset_full(self):
-        return self.dataset
-
-    def get_dataset_target(self):
-        return self.target
-
-    def get_dataset_test_full(self):
-        return self.test_set
 
 
 
