@@ -11,4 +11,4 @@ class Validation_set(Dataset):
         self.target = self._validation_target
 
     def evaluate_model_with_mean_absolute_error(self, prediction: np.ndarray):
-        return ModelEvaluator(self.dataset, prediction).evaluate_mean_absolute_error()
+        return ModelEvaluator(self.target, prediction).evaluate_mean_absolute_error()

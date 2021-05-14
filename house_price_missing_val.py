@@ -1,9 +1,8 @@
 from dataset_creator import Dataset_creator
-from dataset import Dataset
-from imputer import Imputer
 from training_set import Training_set
 from validation_set import Validation_set
-from test_set import Test_set
+from sklearn.ensemble import RandomForestRegressor
+from imputer import Imputer
 
 dataset_creator = Dataset_creator("train.csv", "test.csv", "SalePrice")
 
@@ -11,51 +10,87 @@ dataset_creator = Dataset_creator("train.csv", "test.csv", "SalePrice")
 dataset_creator.clean_dataset_of_string_columns()
 dataset_creator.clean_test_set_of_string_columns()
 
-dataset = dataset_creator.create_dataset()
+# Create the dataset that will generate training/validation_set with a specific split :
+dataset = dataset_creator.create_dataset(split=0.8)
 
-# Cut the dataset between a training set and a validation set :
+# Drop columns with missing values method
+# - Cut the dataset between a training set and a validation set :
+reduced_training_set = Training_set(dataset)
+reduced_validation_set = Validation_set(dataset)
+
+# - reduce : columns with missing val are dropped :
+reduced_training_set.drop_columns_with_missing_val()
+reduced_validation_set.drop_columns_with_missing_val()
+'''
+# - Use random forest regressor :
+model = RandomForestRegressor(n_estimators=100, random_state=0)
+
+# - Let's train the model :
+model.fit(reduced_training_set.dataset, reduced_training_set.target)
+
+# - Apply prediction :
+prediction = model.predict(reduced_validation_set.dataset)
+
+# - Evaluate model performance with MAE :
+print(reduced_validation_set.evaluate_model_with_mean_absolute_error(prediction))
+'''
+
+# Impute columns with missing values method
+# - Cut the dataset between a training set and a validation set :
+imputed_training_set = Training_set(dataset)
+imputed_validation_set = Validation_set(dataset)
+
+# - Create the imputer :
+imputer_1 = Imputer(imputer_type='simple', imputer_training_set=imputed_training_set.dataset)
+
+# - impute : columns with missing val are dropped :
+imputed_training_set.impute_columns_with_missing_val(imputer_1)
+imputed_validation_set.impute_columns_with_missing_val(imputer_1)
+
+'''
+# - Use random forest regressor :
+model = RandomForestRegressor(n_estimators=100, random_state=0)
+
+# - Let's train the model :
+model.fit(imputed_training_set.dataset, imputed_training_set.target)
+
+# - Apply prediction :
+prediction = model.predict(imputed_validation_set.dataset)
+
+# - Evaluate model performance with MAE :
+print(imputed_validation_set.evaluate_model_with_mean_absolute_error(prediction))
+'''
+
+# Impute and drop according to a specific number of missing values :
+# - Cut the dataset between a training set and a validation set :
 training_set = Training_set(dataset)
 validation_set = Validation_set(dataset)
 
-print(training_set.dataset)
-print(validation_set.dataset)
-
-
-'''
+# Drop columns with missing values method - according to a limiter :
 missing_val_number_limiter = 10
-deal_with_missing_val_for_X_train = DealWithMissingValues(X_train, "train", missing_val_number_limiter)
-deal_with_missing_val_for_X_valid = DealWithMissingValues(X_valid, "valid", missing_val_number_limiter)
-deal_with_missing_val_for_X_test = DealWithMissingValues(X_test, "test", missing_val_number_limiter)
+training_set.drop_columns_with_missing_val(missing_val_number_limiter)
+validation_set.drop_columns_with_missing_val(missing_val_number_limiter)
 
-reduced_X_train = deal_with_missing_val_for_X_train.drop_columns_with_missing_val()
-reduced_X_valid = deal_with_missing_val_for_X_valid.drop_columns_with_missing_val()
-model_drop = ModelGenerator(reduced_X_train, reduced_X_valid, y_train, y_valid)
-model_drop.generate_random_forest_regressor_model(n_estimators=100, random_state=0)
-model_drop.train()
-prediction_drop = model_drop.predict(reduced_X_valid)
-model_drop_evaluation = ModelEvaluator(y_valid, prediction_drop)
-print(model_drop_evaluation.evaluate_and_get_mean_absolute_error())
+# Locate missing values and put that information into columns :
+training_set.locate_missing_values()
+validation_set.locate_missing_values()
 
-imputer = Imputer('simple', X_train)
-imputed_X_train = deal_with_missing_val_for_X_train.impute_columns_with_missing_val(imputer, X_train)
-imputed_X_valid = deal_with_missing_val_for_X_valid.impute_columns_with_missing_val(imputer, X_valid)
-model_imputed = ModelGenerator(imputed_X_train, imputed_X_valid, y_train, y_valid)
-model_imputed.generate_random_forest_regressor_model(n_estimators=100, random_state=0)
-model_imputed.train()
-prediction_imputed = model_imputed.predict(imputed_X_valid)
-model_imputed_evaluation = ModelEvaluator(y_valid, prediction_imputed)
-print(model_imputed_evaluation.evaluate_and_get_mean_absolute_error())
+# - Create the imputer :
+imputer_2 = Imputer(imputer_type='simple', imputer_training_set=training_set.dataset)
 
-zero_one_X_train = deal_with_missing_val_for_X_train.replace_missing_val_columns_with_zero_one_columns(imputer)
-zero_one_X_valid = deal_with_missing_val_for_X_valid.replace_missing_val_columns_with_zero_one_columns(imputer)
-model_zero_one = ModelGenerator(zero_one_X_train, zero_one_X_valid, y_train, y_valid)
-model_zero_one.generate_random_forest_regressor_model(n_estimators=100, random_state=0)
-model_zero_one.train()
-prediction_zero_one = model_zero_one.predict(zero_one_X_valid)
-model_zero_one_evaluation = ModelEvaluator(y_valid, prediction_zero_one)
-print(model_zero_one_evaluation.evaluate_and_get_mean_absolute_error())
+# Impute columns under limiter :
+training_set.impute_columns_with_missing_val(imputer_2)
+validation_set.impute_columns_with_missing_val(imputer_2)
 
-zero_one_X_test = deal_with_missing_val_for_X_test.replace_missing_val_columns_with_zero_one_columns(imputer)
-prediction_test = model_zero_one.predict(zero_one_X_test)
-model_zero_one.generate_sumbmission_file(X_test, prediction_test)
-'''
+# - Use random forest regressor :
+model = RandomForestRegressor(n_estimators=100, random_state=0)
+
+# - Let's train the model :
+model.fit(training_set.dataset, training_set.target)
+
+# - Apply prediction :
+prediction = model.predict(validation_set.dataset)
+
+# - Evaluate model performance with MAE :
+print(validation_set.evaluate_model_with_mean_absolute_error(prediction))
+

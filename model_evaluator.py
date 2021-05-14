@@ -10,4 +10,4 @@ class ModelEvaluator:
         self.__prediction = prediction
 
     def evaluate_mean_absolute_error(self):
-        return mean_absolute_error(self.__validation_set, self.prediction)
+        return mean_absolute_error(self.__validation_set, self.__prediction)
