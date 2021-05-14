@@ -11,13 +11,14 @@ dataset_creator = Dataset_creator("train.csv", "test.csv", "SalePrice")
 dataset_creator.clean_dataset_of_string_columns()
 dataset_creator.clean_test_set_of_string_columns()
 
-dataset = Dataset(dataset_creator.dataset, dataset_creator.target, 0.8)
-test_set = Test_set(dataset_creator.test_set)
+dataset = dataset_creator.create_dataset()
 
 # Cut the dataset between a training set and a validation set :
-training_set = Training_set(dataset_creator.dataset, dataset_creator.target, 0.8)
-validation_set = Validation_set(dataset_creator.dataset, dataset_creator.target, 0.8)
+training_set = Training_set(dataset)
+validation_set = Validation_set(dataset)
 
+print(training_set.dataset)
+print(validation_set.dataset)
 
 
 '''
