@@ -10,6 +10,8 @@ class Dataset:
         self.__check_split_value_input(split)
         self.__create_training_and_validation_set(dataset, target, split)
         self.dataset = dataset
+        self.target = target
+        self.split = split
 
     def __check_split_value_input(self, split: int):
         if split < 0.0:
