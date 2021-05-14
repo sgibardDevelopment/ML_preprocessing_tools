@@ -1,5 +1,7 @@
 import pandas as pd
 from dataset import Dataset
+from test_set import Test_set
+
 
 class Dataset_creator:
 
@@ -24,18 +26,17 @@ class Dataset_creator:
         self.__delete_target_column(target_column_name)
         return target
 
-    def __delete_target_column(self, target_column_name:str):
+    def __delete_target_column(self, target_column_name: str):
         self.dataset.drop([target_column_name], axis=1, inplace=True)
 
-    def create_dataset(self, split= 0.8):
+    def create_dataset(self, split=0.8):
         return Dataset(self.__dataset, self.__target, split)
+
+    def create_test_set(self):
+        return Test_set(self.__test_set)
 
     def clean_dataset_of_string_columns(self):
         self.dataset = self.dataset.select_dtypes(exclude=['object'])
 
     def clean_test_set_of_string_columns(self):
         self.test_set = self.test_set.select_dtypes(exclude=['object'])
-
-
-
-
