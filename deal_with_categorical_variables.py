@@ -8,14 +8,14 @@ class DealWithCategoricalVariables:
         self.unique_var_limiter = unique_var_limiter
 
         if unique_var_limiter is None:
-            self.__create_list_of_cols_with_categ_data()
+            self.__get_categorical_columns()
         else:
-            self.__create_list_of_cols_with_categ_data_according_to_limiter()
+            self.__get_categorical_columns_according_to_limiter()
 
-    def __create_list_of_cols_with_categ_data(self):
+    def __get_categorical_columns(self):
         self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtypes == 'object']
 
-    def __create_list_of_cols_with_categ_data_according_to_limiter(self):
+    def __get_categorical_columns_according_to_limiter(self):
         self.col_with_categ_data = [col for col in self.working_set.columns if
                                     len(self.working_set[col].unique()) > self.unique_var_limiter]
 
