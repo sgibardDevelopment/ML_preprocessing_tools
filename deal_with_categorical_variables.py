@@ -19,4 +19,8 @@ class DealWithCategoricalVariables:
         self.col_with_categ_data = [col for col in self.working_set.columns if
                                     len(self.working_set[col].unique()) > self.unique_var_limiter]
 
+    def drop_numerical_columns(self):
+        numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
+        return self.working_set.drop(numerical_columns, axis=1)
+
 

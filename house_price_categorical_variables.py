@@ -9,8 +9,10 @@ working_set.drop(["Prix"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
 
+print(dataset.dataset)
 deal_with_categorical_variables = DealWithCategoricalVariables(dataset.dataset)
-print(deal_with_categorical_variables.col_with_categ_data)
+dataset.dataset = deal_with_categorical_variables.drop_numerical_columns()
+print(dataset.dataset)
 
 
 '''print(dataset.dataset)
