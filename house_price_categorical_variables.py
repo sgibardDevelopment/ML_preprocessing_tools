@@ -11,7 +11,7 @@ dataset = Dataset(working_set, target)
 
 print(dataset.dataset)
 deal_with_categorical_variables = DealWithCategoricalVariables(dataset.dataset)
-print(deal_with_categorical_variables.col_with_categ_data)
+print(deal_with_categorical_variables.drop_categorical_columns())
 
 
 '''print(dataset.dataset)
