@@ -10,21 +10,26 @@ class DealWithCategoricalVariables:
         self.__get_unique_entries_per_categorical_columns()
         self.__get_categorical_columns()
 
+    def __get_unique_entries_per_categorical_columns(self):
+        self.unique_entries_per_categorical_columns = dict()
+        for col in self.working_set.columns:
+            self.unique_entries_per_categorical_columns[col] = len(self.working_set[col].unique())
+
+    def __get_categorical_columns(self):
+        self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtypes == 'object']
+
     def __create_high_and_low_cardinality_parameters_according_to_limiter(self, unique_var_limiter: int):
         if unique_var_limiter is not None:
             self.__get_high_cardinality_categorical_columns_according_to_limiter(unique_var_limiter)
             self.__get_low_cardinality_categorical_columns_according_to_limiter(unique_var_limiter)
 
-    def __get_categorical_columns(self):
-        self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtypes == 'object']
-
     def __get_high_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
         self.high_card_col_with_categ_data = [col for col in self.working_set.columns if
-                                    len(self.working_set[col].unique()) > unique_var_limiter]
+                                              self.unique_entries_per_categorical_columns[col] > unique_var_limiter]
 
     def __get_low_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
         self.low_card_col_with_categ_data = [col for col in self.working_set.columns if
-                                              len(self.working_set[col].unique()) <= unique_var_limiter]
+                                             self.unique_entries_per_categorical_columns[col] <= unique_var_limiter]
 
     def drop_numerical_columns(self):
         numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
@@ -40,31 +45,36 @@ class DealWithCategoricalVariables:
             else:
                 return self.__drop_low_card()
 
-
     def __drop_high_card(self):
         return self.working_set.drop(self.high_card_col_with_categ_data, axis=1)
 
     def __drop_low_card(self):
         return self.working_set.drop(self.low_card_col_with_categ_data, axis=1)
 
-    def __get_unique_entries_per_categorical_columns(self):
-        self.unique_entries_per_categorical_columns = dict()
-        for col in self.working_set.columns:
-            self.unique_entries_per_categorical_columns[col] = len(self.working_set[col].unique())
-
-    def apply_one_hot_encoding(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame):
-        categorical_var_working_set = self.drop_numerical_columns()
-        categorical_var_training_set = self.__create_categorical_var_training_set(training_set)
-        numerical_working_set = self.drop_categorical_columns()
-        one_hot_encoded_working_set = self.__one_hot_encode(one_hot_encoder, categorical_var_working_set, categorical_var_training_set)
+    def apply_one_hot_encoding(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame,
+                               unique_var_limiter=None, drop_type="high"):
+        self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
+        one_hot_encoded_working_set = self.__one_hot_encode_working_set(one_hot_encoder, training_set,
+                                                                        unique_var_limiter, drop_type)
         one_hot_encoded_working_set = self.__reformat_one_hot_encoded_array_into_df(one_hot_encoded_working_set)
-        return pd.concat([numerical_working_set, one_hot_encoded_working_set], axis=1)
+        not_oh_encoded_working_set = self.__retrieve_not_oh_encoded_working_set(unique_var_limiter, drop_type)
+        return pd.concat([not_oh_encoded_working_set, one_hot_encoded_working_set], axis=1)
 
-    def __create_categorical_var_training_set(self, training_set: pd.DataFrame):
-        deal_with_categorical_var_for_training_set = DealWithCategoricalVariables(training_set)
-        return deal_with_categorical_var_for_training_set.drop_numerical_columns()
+    def __one_hot_encode_working_set(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame,
+                                     unique_var_limiter: int, drop_type: str):
+        if unique_var_limiter is None:
+            return self.__one_hot_encode(one_hot_encoder, self.working_set[self.col_with_categ_data],
+                                         training_set[self.col_with_categ_data])
+        else:
+            if drop_type is "high":
+                return self.__one_hot_encode(one_hot_encoder, self.working_set[self.high_card_col_with_categ_data],
+                                             training_set[self.high_card_col_with_categ_data])
+            else:
+                return self.__one_hot_encode(one_hot_encoder, self.working_set[self.low_card_col_with_categ_data],
+                                             training_set[self.low_card_col_with_categ_data])
 
-    def __one_hot_encode(self, one_hot_encoder: OneHotEncoder, categorical_var_working_set: pd.DataFrame, categorical_var_training_set: pd.DataFrame):
+    def __one_hot_encode(self, one_hot_encoder: OneHotEncoder, categorical_var_working_set: pd.DataFrame,
+                         categorical_var_training_set: pd.DataFrame):
         one_hot_encoder.fit(categorical_var_training_set)
         return one_hot_encoder.transform(categorical_var_working_set)
 
@@ -73,3 +83,6 @@ class DealWithCategoricalVariables:
         one_hot_encoded_df.index = self.working_set.index
         return one_hot_encoded_df
 
+    def __retrieve_not_oh_encoded_working_set(self, unique_var_limiter: int, drop_type: str):
+        deal_with_categorical_var_for_working_set = DealWithCategoricalVariables(self.working_set)
+        return deal_with_categorical_var_for_working_set.drop_categorical_columns(unique_var_limiter, drop_type)
