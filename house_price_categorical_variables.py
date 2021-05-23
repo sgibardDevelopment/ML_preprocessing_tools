@@ -10,7 +10,8 @@ working_set.drop(["Prix"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
 
-deal_with_categorical_variables = DealWithCategoricalVariables(dataset.dataset, unique_var_limiter=7)
+deal_with_categorical_variables = DealWithCategoricalVariables(dataset.dataset)
+dataset.dataset = deal_with_categorical_variables.drop_categorical_columns(unique_var_limiter=7, drop_type="low")
 print(deal_with_categorical_variables.unique_entries_per_categorical_columns)
 print("col_with_categ_data : ", deal_with_categorical_variables.col_with_categ_data)
 print("high_card_col_with_categ_data : ", deal_with_categorical_variables.high_card_col_with_categ_data)
@@ -25,5 +26,5 @@ print(deal_with_categorical_variables.apply_one_hot_encoding(one_hot_encoder, da
 
 
 
-'''print(dataset.dataset)
-print(dataset.target)'''
+print(dataset.dataset)
+print(dataset.target)
