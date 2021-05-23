@@ -13,14 +13,20 @@ class DealWithCategoricalVariables:
         if unique_var_limiter is None:
             self.__get_categorical_columns()
         else:
-            self.__get_categorical_columns_according_to_limiter()
+            self.__get_categorical_columns()
+            self.__get_high_cardinality_categorical_columns_according_to_limiter()
+            self.__get_low_cardinality_column_according_to_limiter()
 
     def __get_categorical_columns(self):
         self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtypes == 'object']
 
-    def __get_categorical_columns_according_to_limiter(self):
-        self.col_with_categ_data = [col for col in self.working_set.columns if
+    def __get_high_cardinality_categorical_columns_according_to_limiter(self):
+        self.high_card_col_with_categ_data = [col for col in self.working_set.columns if
                                     len(self.working_set[col].unique()) > self.unique_var_limiter]
+
+    def __get_low_cardinality_column_according_to_limiter(self):
+        self.low_card_col_with_categ_data = [col for col in self.working_set.columns if
+                                              len(self.working_set[col].unique()) <= self.unique_var_limiter]
 
     def drop_numerical_columns(self):
         numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
