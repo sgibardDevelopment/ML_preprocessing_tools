@@ -5,29 +5,47 @@ from sklearn.preprocessing import OneHotEncoder
 
 class DealWithCategoricalVariables:
 
-    def __init__(self, working_set: pd.DataFrame, unique_var_limiter=None):
+    def __init__(self, working_set: pd.DataFrame):
         self.working_set = working_set
-        self.unique_var_limiter = unique_var_limiter
         self.__get_unique_entries_per_categorical_columns()
+        self.__get_categorical_columns()
 
-        if unique_var_limiter is None:
-            self.__get_categorical_columns()
-        else:
-            self.__get_categorical_columns_according_to_limiter()
+    def __create_high_and_low_cardinality_parameters_according_to_limiter(self, unique_var_limiter: int):
+        if unique_var_limiter is not None:
+            self.__get_high_cardinality_categorical_columns_according_to_limiter(unique_var_limiter)
+            self.__get_low_cardinality_categorical_columns_according_to_limiter(unique_var_limiter)
 
     def __get_categorical_columns(self):
         self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtypes == 'object']
 
-    def __get_categorical_columns_according_to_limiter(self):
-        self.col_with_categ_data = [col for col in self.working_set.columns if
-                                    len(self.working_set[col].unique()) > self.unique_var_limiter]
+    def __get_high_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
+        self.high_card_col_with_categ_data = [col for col in self.working_set.columns if
+                                    len(self.working_set[col].unique()) > unique_var_limiter]
+
+    def __get_low_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
+        self.low_card_col_with_categ_data = [col for col in self.working_set.columns if
+                                              len(self.working_set[col].unique()) <= unique_var_limiter]
 
     def drop_numerical_columns(self):
         numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
         return self.working_set.drop(numerical_columns, axis=1)
 
-    def drop_categorical_columns(self):
-        return self.working_set.drop(self.col_with_categ_data, axis=1)
+    def drop_categorical_columns(self, unique_var_limiter=None, drop_type="high"):
+        if unique_var_limiter is None:
+            return self.working_set.drop(self.col_with_categ_data, axis=1)
+        else:
+            self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
+            if drop_type is "high":
+                return self.__drop_high_card()
+            else:
+                return self.__drop_low_card()
+
+
+    def __drop_high_card(self):
+        return self.working_set.drop(self.high_card_col_with_categ_data, axis=1)
+
+    def __drop_low_card(self):
+        return self.working_set.drop(self.low_card_col_with_categ_data, axis=1)
 
     def __get_unique_entries_per_categorical_columns(self):
         self.unique_entries_per_categorical_columns = dict()
