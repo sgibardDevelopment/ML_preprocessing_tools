@@ -10,7 +10,8 @@ target = working_set.Money
 working_set.drop(["Money"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
-dataset.drop_columns_with_missing_val(missing_val_number_limiter=3)
+dataset.drop_columns_with_missing_val(missing_val_number_limiter=1)
+dataset.locate_missing_values(missing_val_number_limiter=0)
 print(dataset.dataset)
 
 

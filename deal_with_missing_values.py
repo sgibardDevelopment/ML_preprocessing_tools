@@ -13,7 +13,8 @@ class DealWithMissingValues:
     def impute_columns_with_missing_val(self, imputer: Imputer):
         return imputer.transform_with_imputer(self.working_set)
 
-    def locate_missing_values(self):
+    def locate_missing_values(self, missing_val_number_limiter=None):
+        self.__initialize_list_of_cols_with_missing_values(missing_val_number_limiter)
         for col in self.cols_with_missing_values:
             self.working_set[col + " has na ?"] = self.working_set[col].isnull().astype(int)
         return self.working_set
