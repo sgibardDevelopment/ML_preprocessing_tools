@@ -3,8 +3,10 @@ from imputer import Imputer
 
 class DealWithMissingValues:
 
-    def __init__(self, working_set: pd.DataFrame, missing_val_number_limiter=None):
+    def __init__(self, working_set: pd.DataFrame):
         self.working_set = working_set
+
+    def __initialize_list_of_colsèwith_missing_values(self, missing_val_number_limiter: int):
         if missing_val_number_limiter is None:
             self.__create_list_of_cols_with_missing_values()
         else:
