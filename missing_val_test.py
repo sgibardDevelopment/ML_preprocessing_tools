@@ -10,14 +10,8 @@ target = working_set.Money
 working_set.drop(["Money"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
-training_set = Training_set(dataset)
-validation_set = Validation_set(dataset)
-
-print(validation_set.dataset)
-
-imputer = Imputer("simple", training_set.dataset)
-validation_set.impute_columns_with_missing_val(imputer)
-
-print(validation_set.dataset)
+dataset.drop_columns_with_missing_val(missing_val_number_limiter=1)
+dataset.locate_missing_values(missing_val_number_limiter=0)
+print(dataset.dataset)
 
 

@@ -29,10 +29,10 @@ class Dataset:
         )
 
     def drop_columns_with_missing_val(self, missing_val_number_limiter=None):
-        self.dataset = DealWithMissingValues(self.dataset, missing_val_number_limiter).drop_columns_with_missing_val()
+        self.dataset = DealWithMissingValues(self.dataset).drop_columns_with_missing_val(missing_val_number_limiter)
 
-    def impute_columns_with_missing_val(self, imputer: Imputer, missing_val_number_limiter=None):
-        self.dataset = DealWithMissingValues(self.dataset, missing_val_number_limiter).impute_columns_with_missing_val(imputer)
+    def impute_columns_with_missing_val(self, imputer: Imputer):
+        self.dataset = DealWithMissingValues(self.dataset).impute_columns_with_missing_val(imputer)
 
     def locate_missing_values(self, missing_val_number_limiter=None):
-        self.dataset = DealWithMissingValues(self.dataset, missing_val_number_limiter).locate_missing_values()
+        self.dataset = DealWithMissingValues(self.dataset).locate_missing_values(missing_val_number_limiter)
