@@ -24,12 +24,12 @@ class DealWithCategoricalVariables:
             self.__get_low_cardinality_categorical_columns_according_to_limiter(unique_var_limiter)
 
     def __get_high_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
-        self.high_card_col_with_categ_data = [col for col in self.working_set.columns if
-                                              self.unique_entries_per_categorical_columns[col] > unique_var_limiter]
+        self.__high_card_col_with_categ_data = [col for col in self.working_set.columns if
+                                                self.unique_entries_per_categorical_columns[col] >= unique_var_limiter]
 
     def __get_low_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
-        self.low_card_col_with_categ_data = [col for col in self.working_set.columns if
-                                             self.unique_entries_per_categorical_columns[col] <= unique_var_limiter]
+        self.__low_card_col_with_categ_data = [col for col in self.working_set.columns if
+                                               self.unique_entries_per_categorical_columns[col] <= unique_var_limiter]
 
     def drop_numerical_columns(self):
         numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
@@ -51,10 +51,10 @@ class DealWithCategoricalVariables:
             raise (ValueError("Error: You must select 'high' or 'low' cardinality"))
 
     def __drop_high_card(self):
-        return self.working_set.drop(self.high_card_col_with_categ_data, axis=1)
+        return self.working_set.drop(self.__high_card_col_with_categ_data, axis=1)
 
     def __drop_low_card(self):
-        return self.working_set.drop(self.low_card_col_with_categ_data, axis=1)
+        return self.working_set.drop(self.__low_card_col_with_categ_data, axis=1)
 
     def apply_one_hot_encoding(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame,
                                unique_var_limiter=None, cardinal_type="high"):
@@ -82,12 +82,12 @@ class DealWithCategoricalVariables:
             raise (ValueError("Error: You must select 'high' or 'low' cardinality"))
 
     def __oh_encode_high_card(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame):
-        return self.__one_hot_encode(one_hot_encoder, self.working_set[self.high_card_col_with_categ_data],
-                                     training_set[self.high_card_col_with_categ_data])
+        return self.__one_hot_encode(one_hot_encoder, self.working_set[self.__high_card_col_with_categ_data],
+                                     training_set[self.__high_card_col_with_categ_data])
 
     def __oh_encode_low_card(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame):
-        return self.__one_hot_encode(one_hot_encoder, self.working_set[self.low_card_col_with_categ_data],
-                                     training_set[self.low_card_col_with_categ_data])
+        return self.__one_hot_encode(one_hot_encoder, self.working_set[self.__low_card_col_with_categ_data],
+                                     training_set[self.__low_card_col_with_categ_data])
 
     def __one_hot_encode(self, one_hot_encoder: OneHotEncoder, categorical_var_working_set: pd.DataFrame,
                          categorical_var_training_set: pd.DataFrame):
