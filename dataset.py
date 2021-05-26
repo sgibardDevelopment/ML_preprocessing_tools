@@ -12,6 +12,7 @@ class Dataset:
         self.__check_split_value_input(split)
         self.__create_training_and_validation_set(dataset, target, split)
         self.dataset = dataset
+        self.__saved_dataset = dataset
         self.target = target
         self.split = split
 
@@ -29,6 +30,9 @@ class Dataset:
             test_size=1 - split,
             random_state=0
         )
+
+    def reset_dataset(self):
+        self.dataset = self.__saved_dataset
 
     def drop_columns_with_missing_val(self, missing_val_number_limiter=None, level="above"):
         self.dataset = DealWithMissingValues(self.dataset).drop_columns_with_missing_val(missing_val_number_limiter,
