@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from deal_with_missing_values import DealWithMissingValues
+from deal_with_categorical_variables import DealWithCategoricalVariables
 from imputer import Imputer
 
 
@@ -36,3 +37,6 @@ class Dataset:
 
     def locate_missing_values(self, missing_val_number_limiter=None, level="above"):
         self.dataset = DealWithMissingValues(self.dataset).locate_missing_values(missing_val_number_limiter, level)
+
+    def drop_numerical_columns(self):
+        self.dataset = DealWithCategoricalVariables(self.dataset).drop_numerical_columns()
