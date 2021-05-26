@@ -40,3 +40,6 @@ class Dataset:
 
     def drop_numerical_columns(self):
         self.dataset = DealWithCategoricalVariables(self.dataset).drop_numerical_columns()
+
+    def drop_categorical_columns(self, unique_var_limiter=None, cardinal_type="high"):
+        self.dataset = DealWithCategoricalVariables(self.dataset).drop_categorical_columns(unique_var_limiter, cardinal_type)

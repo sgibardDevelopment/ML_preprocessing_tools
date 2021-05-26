@@ -10,7 +10,7 @@ working_set.drop(["Prix"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
 print(dataset.dataset)
-dataset.drop_numerical_columns()
+dataset.drop_categorical_columns()
 print(dataset.dataset)
 
 one_hot_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
