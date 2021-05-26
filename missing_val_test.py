@@ -11,8 +11,8 @@ working_set.drop(["Money"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
 #dataset.drop_columns_with_missing_val(missing_val_number_limiter=2, level="below")
-dataset.locate_missing_values(missing_val_number_limiter=1, level="below")
-dataset.drop_columns_with_missing_val(missing_val_number_limiter=1, level="below")
+dataset.locate_missing_values(missing_val_number_limiter=3, level="below")
+dataset.drop_columns_with_missing_val(missing_val_number_limiter=3, level="below")
 print(dataset.dataset)
 
 
