@@ -10,13 +10,24 @@ class DealWithCategoricalVariables:
         self.__get_categorical_columns()
         self.__get_unique_entries_per_categorical_columns()
 
+    def __get_categorical_columns(self):
+        self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtype == "object"]
+
     def __get_unique_entries_per_categorical_columns(self):
         self.unique_entries_per_categorical_columns = dict()
         for col in self.col_with_categ_data:
             self.unique_entries_per_categorical_columns[col] = len(self.working_set[col].unique())
 
-    def __get_categorical_columns(self):
-        self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtype == "object"]
+    def drop_numerical_columns(self):
+        numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
+        return self.working_set.drop(numerical_columns, axis=1)
+
+    def drop_categorical_columns(self, unique_var_limiter=None, cardinal_type="high"):
+        if unique_var_limiter is None:
+            return self.working_set.drop(self.col_with_categ_data, axis=1)
+        else:
+            self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
+            return self.__select_dropping_according_to_cardinal_type(cardinal_type)
 
     def __create_high_and_low_cardinality_parameters_according_to_limiter(self, unique_var_limiter: int):
         if unique_var_limiter is not None:
@@ -30,17 +41,6 @@ class DealWithCategoricalVariables:
     def __get_low_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
         self.__low_card_col_with_categ_data = [col for col in self.col_with_categ_data if
                                                self.unique_entries_per_categorical_columns[col] <= unique_var_limiter]
-
-    def drop_numerical_columns(self):
-        numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
-        return self.working_set.drop(numerical_columns, axis=1)
-
-    def drop_categorical_columns(self, unique_var_limiter=None, cardinal_type="high"):
-        if unique_var_limiter is None:
-            return self.working_set.drop(self.col_with_categ_data, axis=1)
-        else:
-            self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
-            return self.__select_dropping_according_to_cardinal_type(cardinal_type)
 
     def __select_dropping_according_to_cardinal_type(self, cardinal_type: str):
         if cardinal_type is "high":

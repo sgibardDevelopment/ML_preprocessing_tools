@@ -22,6 +22,6 @@ one_hot_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
 one_hot_encoder.fit(dataset.dataset)
 one_hot_encoder.transform(dataset.dataset)
 
-print(deal_with_categorical_variables.apply_one_hot_encoding(one_hot_encoder, dataset.dataset, unique_var_limiter=7, cardinal_type="low"))
+print(deal_with_categorical_variables.apply_one_hot_encoding(one_hot_encoder, dataset.dataset, unique_var_limiter=7, cardinal_type="high"))
 
 '''print(dataset.target)'''
