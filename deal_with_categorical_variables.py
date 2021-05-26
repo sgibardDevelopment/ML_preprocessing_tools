@@ -40,12 +40,15 @@ class DealWithCategoricalVariables:
             return self.working_set.drop(self.col_with_categ_data, axis=1)
         else:
             self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
-            if cardinal_type is "high":
-                return self.__drop_high_card()
-            elif cardinal_type is "low":
-                return self.__drop_low_card()
-            else:
-                raise (ValueError("Error: You must select 'high' or 'low' cardinality"))
+            return self.__select_dropping_according_to_cardinal_type(cardinal_type)
+
+    def __select_dropping_according_to_cardinal_type(self, cardinal_type: str):
+        if cardinal_type is "high":
+            return self.__drop_high_card()
+        elif cardinal_type is "low":
+            return self.__drop_low_card()
+        else:
+            raise (ValueError("Error: You must select 'high' or 'low' cardinality"))
 
     def __drop_high_card(self):
         return self.working_set.drop(self.high_card_col_with_categ_data, axis=1)
