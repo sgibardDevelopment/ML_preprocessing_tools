@@ -71,12 +71,15 @@ class DealWithCategoricalVariables:
             return self.__one_hot_encode(one_hot_encoder, self.working_set[self.col_with_categ_data],
                                          training_set[self.col_with_categ_data])
         else:
-            if cardinal_type is "high":
-                return self.__one_hot_encode(one_hot_encoder, self.working_set[self.high_card_col_with_categ_data],
-                                             training_set[self.high_card_col_with_categ_data])
-            else:
-                return self.__one_hot_encode(one_hot_encoder, self.working_set[self.low_card_col_with_categ_data],
-                                             training_set[self.low_card_col_with_categ_data])
+
+
+    def __select_oh_encoding_according_to_cardinal_type(self, one_hot_encoder: OneHotEncoder, training_set:pd.DataFrame, cardinal_type: str):
+        if cardinal_type is "high":
+            return self.__one_hot_encode(one_hot_encoder, self.working_set[self.high_card_col_with_categ_data],
+                                         training_set[self.high_card_col_with_categ_data])
+        else:
+            return self.__one_hot_encode(one_hot_encoder, self.working_set[self.low_card_col_with_categ_data],
+                                         training_set[self.low_card_col_with_categ_data])
 
     def __one_hot_encode(self, one_hot_encoder: OneHotEncoder, categorical_var_working_set: pd.DataFrame,
                          categorical_var_training_set: pd.DataFrame):
