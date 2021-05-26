@@ -9,13 +9,14 @@ target = working_set.Prix
 working_set.drop(["Prix"], axis=1, inplace=True)
 
 dataset = Dataset(working_set, target)
-print(dataset.dataset)
-dataset.drop_categorical_columns()
-print(dataset.dataset)
 
 one_hot_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
 one_hot_encoder.fit(dataset.dataset)
 one_hot_encoder.transform(dataset.dataset)
+
+print(dataset.dataset)
+dataset.apply_one_hot_encoding(one_hot_encoder, dataset.dataset, unique_var_limiter=7, cardinal_type="low")
+print(dataset.dataset)
 
 #print(deal_with_categorical_variables.apply_one_hot_encoding(one_hot_encoder, dataset.dataset, unique_var_limiter=7, cardinal_type="high"))
 
