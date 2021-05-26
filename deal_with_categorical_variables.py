@@ -35,15 +35,17 @@ class DealWithCategoricalVariables:
         numerical_columns = [col for col in self.working_set.columns if self.working_set[col].dtypes == int]
         return self.working_set.drop(numerical_columns, axis=1)
 
-    def drop_categorical_columns(self, unique_var_limiter=None, drop_type="high"):
+    def drop_categorical_columns(self, unique_var_limiter=None, cardinal_type="high"):
         if unique_var_limiter is None:
             return self.working_set.drop(self.col_with_categ_data, axis=1)
         else:
             self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
-            if drop_type is "high":
+            if cardinal_type is "high":
                 return self.__drop_high_card()
-            else:
+            elif cardinal_type is "low":
                 return self.__drop_low_card()
+            else:
+                raise (ValueError("Error: You must select 'high' or 'low' cardinality"))
 
     def __drop_high_card(self):
         return self.working_set.drop(self.high_card_col_with_categ_data, axis=1)
@@ -52,21 +54,21 @@ class DealWithCategoricalVariables:
         return self.working_set.drop(self.low_card_col_with_categ_data, axis=1)
 
     def apply_one_hot_encoding(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame,
-                               unique_var_limiter=None, drop_type="high"):
+                               unique_var_limiter=None, cardinal_type="high"):
         self.__create_high_and_low_cardinality_parameters_according_to_limiter(unique_var_limiter)
         one_hot_encoded_working_set = self.__one_hot_encode_working_set(one_hot_encoder, training_set,
-                                                                        unique_var_limiter, drop_type)
+                                                                        unique_var_limiter, cardinal_type)
         one_hot_encoded_working_set = self.__reformat_one_hot_encoded_array_into_df(one_hot_encoded_working_set)
-        not_oh_encoded_working_set = self.__retrieve_not_oh_encoded_working_set(unique_var_limiter, drop_type)
+        not_oh_encoded_working_set = self.__retrieve_not_oh_encoded_working_set(unique_var_limiter, cardinal_type)
         return pd.concat([not_oh_encoded_working_set, one_hot_encoded_working_set], axis=1)
 
     def __one_hot_encode_working_set(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame,
-                                     unique_var_limiter: int, drop_type: str):
+                                     unique_var_limiter: int, cardinal_type: str):
         if unique_var_limiter is None:
             return self.__one_hot_encode(one_hot_encoder, self.working_set[self.col_with_categ_data],
                                          training_set[self.col_with_categ_data])
         else:
-            if drop_type is "high":
+            if cardinal_type is "high":
                 return self.__one_hot_encode(one_hot_encoder, self.working_set[self.high_card_col_with_categ_data],
                                              training_set[self.high_card_col_with_categ_data])
             else:
@@ -83,6 +85,6 @@ class DealWithCategoricalVariables:
         one_hot_encoded_df.index = self.working_set.index
         return one_hot_encoded_df
 
-    def __retrieve_not_oh_encoded_working_set(self, unique_var_limiter: int, drop_type: str):
+    def __retrieve_not_oh_encoded_working_set(self, unique_var_limiter: int, cardinal_type: str):
         deal_with_categorical_var_for_working_set = DealWithCategoricalVariables(self.working_set)
-        return deal_with_categorical_var_for_working_set.drop_categorical_columns(unique_var_limiter, drop_type)
+        return deal_with_categorical_var_for_working_set.drop_categorical_columns(unique_var_limiter, cardinal_type)
