@@ -7,16 +7,16 @@ class DealWithCategoricalVariables:
 
     def __init__(self, working_set: pd.DataFrame):
         self.working_set = working_set
-        self.__get_unique_entries_per_categorical_columns()
         self.__get_categorical_columns()
+        self.__get_unique_entries_per_categorical_columns()
 
     def __get_unique_entries_per_categorical_columns(self):
         self.unique_entries_per_categorical_columns = dict()
-        for col in self.working_set.columns:
+        for col in self.col_with_categ_data:
             self.unique_entries_per_categorical_columns[col] = len(self.working_set[col].unique())
 
     def __get_categorical_columns(self):
-        self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtypes == 'object']
+        self.col_with_categ_data = [col for col in self.working_set.columns if self.working_set[col].dtype == "object"]
 
     def __create_high_and_low_cardinality_parameters_according_to_limiter(self, unique_var_limiter: int):
         if unique_var_limiter is not None:
@@ -24,11 +24,11 @@ class DealWithCategoricalVariables:
             self.__get_low_cardinality_categorical_columns_according_to_limiter(unique_var_limiter)
 
     def __get_high_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
-        self.__high_card_col_with_categ_data = [col for col in self.working_set.columns if
+        self.__high_card_col_with_categ_data = [col for col in self.col_with_categ_data if
                                                 self.unique_entries_per_categorical_columns[col] >= unique_var_limiter]
 
     def __get_low_cardinality_categorical_columns_according_to_limiter(self, unique_var_limiter: int):
-        self.__low_card_col_with_categ_data = [col for col in self.working_set.columns if
+        self.__low_card_col_with_categ_data = [col for col in self.col_with_categ_data if
                                                self.unique_entries_per_categorical_columns[col] <= unique_var_limiter]
 
     def drop_numerical_columns(self):
