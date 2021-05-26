@@ -76,8 +76,10 @@ class DealWithCategoricalVariables:
     def __select_oh_encoding_according_to_cardinal_type(self, one_hot_encoder: OneHotEncoder, training_set:pd.DataFrame, cardinal_type: str):
         if cardinal_type is "high":
             return self.__oh_encode_high_card(one_hot_encoder, training_set)
-        else:
+        elif cardinal_type is "low":
             return self.__oh_encode_low_card(one_hot_encoder, training_set)
+        else:
+            raise (ValueError("Error: You must select 'high' or 'low' cardinality"))
 
     def __oh_encode_high_card(self, one_hot_encoder: OneHotEncoder, training_set: pd.DataFrame):
         return self.__one_hot_encode(one_hot_encoder, self.working_set[self.high_card_col_with_categ_data],
