@@ -32,9 +32,11 @@ class DealWithMissingValues:
     def __create_list_of_cols_with_missing_values_according_to_limiter(self, missing_val_number_limiter, level):
         missing_val_count_by_column = (self.working_set.isnull().sum())
         if level is "above":
-            self.cols_with_missing_values = missing_val_count_by_column[missing_val_count_by_column >= missing_val_number_limiter].index.values.tolist()
+            rule = (missing_val_count_by_column >= missing_val_number_limiter)
+            self.cols_with_missing_values = missing_val_count_by_column[rule].index.values.tolist()
         elif level is "below":
-            self.cols_with_missing_values = missing_val_count_by_column[missing_val_count_by_column <= missing_val_number_limiter].index.values.tolist()
+            rule = (missing_val_count_by_column <= missing_val_number_limiter)
+            self.cols_with_missing_values = missing_val_count_by_column[rule].index.values.tolist()
         else:
             raise (ValueError("Error: You must select 'above' or 'below' limiter"))
 
